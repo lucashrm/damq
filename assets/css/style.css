@@ -1,0 +1,18 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+body {
+    background-color: #211120;
+    color: white;
+    font-family: Montserrat, sans-serif;
+}
+
+.start {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.start h1 {
+    font-size: 3.5rem;
+}

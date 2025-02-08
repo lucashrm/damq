@@ -8,6 +8,7 @@ export default defineNuxtConfig({
   modules: ["nuxt-security"],
   compatibilityDate: '2024-11-01',
   devtools: { enabled: false },
+  css: ["~/assets/css/style.css"],
   vite: {
     server: {
       allowedHosts: true,

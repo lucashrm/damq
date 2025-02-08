@@ -44,11 +44,12 @@
       throw new Error("Authenticate command failed");
     }
   }
+
 </script>
 
 <template>
-  <div>
-    prout
+  <div id="app">
+    <NuxtPage />
   </div>
 </template>
 
