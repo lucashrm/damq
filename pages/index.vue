@@ -14,6 +14,8 @@ async function setup() {
     body: username.value
   });
 
+
+
   console.log(response);
 }
 

@@ -6,6 +6,8 @@
 
   setupDiscordSdk().then(() => {
     console.log(`Discord SDK ready!`);
+
+
   });
 
   async function setupDiscordSdk() {
@@ -36,13 +38,25 @@
       body: code
     });
 
-    auth = await discordSdk.commands.authenticate({
+    const { user } = await discordSdk.commands.authenticate({
       access_token,
     });
 
-    if (auth == null) {
+    if (user == null) {
       throw new Error("Authenticate command failed");
     }
+
+    let user_id = user.id;
+
+    const resp = await $fetch(`/.proxy/api/fetch_user_db`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: user_id
+    });
+
+    console.log(resp);
   }
 
 </script>
