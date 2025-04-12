@@ -1,63 +1,66 @@
 <script lang="ts" setup>
-  import { DiscordSDK, patchUrlMappings } from "@discord/embedded-app-sdk";
+import {DiscordSDK} from "@discord/embedded-app-sdk";
+import {useState} from "#app";
 
-  const discordSdk = new DiscordSDK(import.meta.env.VITE_DISCORD_CLIENT_ID);
-  let auth;
+const discordSdk = new DiscordSDK(import.meta.env.VITE_DISCORD_CLIENT_ID);
+const localUser = useState<User | null> ("localUser", () => null);
 
-  setupDiscordSdk().then(() => {
-    console.log(`Discord SDK ready!`);
+setupDiscordSdk().then(() => {
+  console.log(`Discord SDK ready!`);
+});
 
+async function setupDiscordSdk() {
+  await discordSdk.ready();
+  console.log("Discord SDK is ready");
 
+  const { code } = await discordSdk.commands.authorize({
+    client_id: import.meta.env.VITE_DISCORD_CLIENT_ID,
+    response_type: "code",
+    state: "",
+    prompt: "none",
+    scope: [
+      "identify",
+      "guilds",
+      "applications.commands"
+    ],
   });
 
-  async function setupDiscordSdk() {
-    await discordSdk.ready();
-    console.log("Discord SDK is ready");
-
-    const { code } = await discordSdk.commands.authorize({
-      client_id: import.meta.env.VITE_DISCORD_CLIENT_ID,
-      response_type: "code",
-      state: "",
-      prompt: "none",
-      scope: [
-        "identify",
-        "guilds",
-        "applications.commands"
-      ],
-    });
-
-    interface TokenResponse {
-      access_token: string;
-    }
-
-    const { access_token }  = await $fetch<TokenResponse>(`/.proxy/api/token`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: code
-    });
-
-    const { user } = await discordSdk.commands.authenticate({
-      access_token,
-    });
-
-    if (user == null) {
-      throw new Error("Authenticate command failed");
-    }
-
-    let user_id = user.id;
-
-    const resp = await $fetch(`/.proxy/api/fetch_user_db`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: user_id
-    });
-
-    console.log(resp);
+  interface TokenResponse {
+    access_token: string;
   }
+
+  const { access_token }  = await $fetch<TokenResponse>(`/.proxy/api/token`, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: code
+  });
+
+  const { user } = await discordSdk.commands.authenticate({
+    access_token,
+  });
+
+  if (user == null) {
+    throw new Error("Authenticate command failed");
+  }
+
+  localUser.value = user;
+  let user_id = user.id;
+
+  const resp = await $fetch(`/.proxy/api/fetch_user_db`, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: user_id
+  });
+
+  if (resp == "User not found") {
+    console.log("User not found");
+    navigateTo("/connect");
+  }
+}
 
 </script>
 
