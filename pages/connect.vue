@@ -18,14 +18,16 @@ async function setup() {
     }
   });
 
-  console.log(response);
+  if (response == "User found") {
+    navigateTo("/menu");
+  }
 }
 
 </script>
 
 <template>
   <div class="start" id="app">
-    <h1>DAMQ</h1>
+    <h1>Bienvenue</h1>
     <button @click="setup">Start</button>
     <div>
       <label>

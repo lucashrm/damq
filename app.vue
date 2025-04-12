@@ -59,6 +59,8 @@ async function setupDiscordSdk() {
   if (resp == "User not found") {
     console.log("User not found");
     navigateTo("/connect");
+  } else {
+    navigateTo("/menu");
   }
 }
 
