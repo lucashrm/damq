@@ -9,6 +9,7 @@ const discord_username = useState<User>("localUser").value.username;
   <h1>Damq</h1>
   <div>
     <h2>Bienvenue {{ discord_username }}</h2>
+    <PlayerDiscordInfos></PlayerDiscordInfos>
   </div>
 </template>
 
