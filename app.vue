@@ -4,13 +4,15 @@ import {useState} from "#app";
 
 const discordSdk = new DiscordSDK(import.meta.env.VITE_DISCORD_CLIENT_ID);
 const localUser = useState<User | null> ("localUser", () => null);
+const localParticipants = useState<Types.GetActivityInstanceConnectedParticipantsResponse | null>("participants", () => null);
 
 setupDiscordSdk().then(() => {
   console.log(`Discord SDK ready!`);
 });
 
 function updateParticipants(participants: Types.GetActivityInstanceConnectedParticipantsResponse) {
-  console.log("participants", participants);
+  console.log("Participants updated");
+  localParticipants.value = participants;
 }
 
 async function setupDiscordSdk() {
@@ -59,8 +61,6 @@ async function setupDiscordSdk() {
     },
     body: user_id
   });
-
-  const participants = await discordSdk.commands.getInstanceConnectedParticipants();
 
   await discordSdk.subscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
 
